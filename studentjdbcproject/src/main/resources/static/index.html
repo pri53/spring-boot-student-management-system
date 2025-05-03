@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1600195077909-43c7e0e54114?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+    </style>
+    <script>
+        function fetchStudents() {
+            fetch('/students')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById("studentsList");
+                    list.innerHTML = "";
+                    data.forEach(s => {
+                        list.innerHTML += `
+                            <tr>
+                                <td>${s.id}</td>
+                                <td>${s.name}</td>
+                                <td>${s.dob}</td>
+                                <td>${s.gender}</td>
+                                <td>${s.course}</td>
+                                <td>${s.phone}</td>
+                                <td>${s.parentPhone}</td>
+                                <td>${s.fatherName}</td>
+                                <td>${s.motherName}</td>
+                                <td>${s.address}</td>
+                                <td>${s.email}</td>
+                            </tr>`;
+                    });
+                });
+        }
+
+        function addStudent() {
+            const student = {
+                name: document.getElementById("name").value,
+                dob: document.getElementById("dob").value,
+                gender: document.getElementById("gender").value,
+                course: document.getElementById("course").value,
+                phone: document.getElementById("phone").value,
+                parentPhone: document.getElementById("parentPhone").value,
+                fatherName: document.getElementById("fatherName").value,
+                motherName: document.getElementById("motherName").value,
+                address: document.getElementById("address").value,
+                email: document.getElementById("email").value
+            };
+
+            fetch('/students', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(student)
+            }).then(response => {
+                if (response.ok) {
+                    fetchStudents();
+                    document.getElementById("studentForm").reset();
+                } else {
+                    alert("Failed to add student");
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3>Student Registration</h3>
+        </div>
+        <div class="card-body">
+            <form id="studentForm" class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Student Name</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" id="dob" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Gender</label>
+                    <select id="gender" class="form-select">
+                        <option value="">Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Course</label>
+                    <input type="text" id="course" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" id="phone" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Parent Phone</label>
+                    <input type="text" id="parentPhone" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Father Name</label>
+                    <input type="text" id="fatherName" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Mother Name</label>
+                    <input type="text" id="motherName" class="form-control">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Address</label>
+                    <textarea id="address" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="col-12">
+                    <button type="button" class="btn btn-success" onclick="addStudent()">Add Student</button>
+                </div>
+            </form>
+
+            <hr class="my-4">
+
+            <h4>Registered Students</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>DOB</th>
+                            <th>Gender</th>
+                            <th>Course</th>
+                            <th>Phone</th>
+                            <th>Parent Phone</th>
+                            <th>Father</th>
+                            <th>Mother</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>fetchStudents();</script>
+</body>
+</html>
